@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html charset="utf-8">
+	<head>
+		<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+		<meta content="utf-8" http-equiv="encoding">
+
+		<style>
+			#time-left {
+				display: inline
+			}
+		</style>
+	</head>
+	<body>
+		Updating in <div id="time-left"></div> seconds
+		<p id="score"></p>
+
+		<script>
+			async function fetchDataAndUpdate(team) {
+				const response = await fetch(`https://6cb4-167-100-66-131.ngrok.io/score?id=${team}&machine=ubuntu`, {
+					mode: 'cors'
+				});
+
+				const scoreLabel = document.getElementById('score');
+				const points = await response.json();
+
+				let totalPoints = 0;
+
+				scoreLabel.innerText = points.map(p => {
+					totalPoints += p.points;
+
+					return `${p.description} - ${p.points} points`;
+				}).join('\n');
+			}
+
+			function run() {
+				let timeLeft = 1;
+
+				const team = window.location.href.match(/id=((?:\w{4}-){2}\w{4})/)?.[1];
+				const timeLeftLabel = document.getElementById('time-left');
+
+				if (!team)
+					return;
+
+				setInterval(async () => {
+					if (--timeLeft === 0) {
+						timeLeft = 60;
+
+						await fetchDataAndUpdate(team);
+					}
+
+					timeLeftLabel.innerText = timeLeft.toString();
+				}, 1000);
+			}
+
+			run();
+		</script>
+	</body>
+</html>
