@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html charset='utf-8'>
+	<head>
+		<meta content='text/html;charset=utf-8' http-equiv='Content-Type'>
+		<meta content='utf-8' http-equiv='encoding'>
+		
+		<style>
+			input[type=text] {
+				width: 100%;
+			}
+
+			#wrap {
+				margin: auto;
+				width: 50%;
+			}
+		</style>
+	</head>
+	<body>
+		<div id='wrap'>
+			<form id='form'>
+				<input type='radio' id='file_create' name='type' value='file_create' onclick='selected(0)'>
+				<label for='file_create'>Create File</label>
+	
+				<input type='radio' id='file_delete' name='type' value='file_delete' onclick='selected(1)'>
+				<label for='file_delete'>Delete File</label>
+	
+				<input type='radio' id='file_line_create' name='type' value='file_line_create' onclick='selected(2)'>
+				<label for='file_line_create'>Create Line in File</label>
+	
+				<input type='radio' id='file_line_delete' name='type' value='file_line_delete' onclick='selected(3)'>
+				<label for='file_line_delete'>Delete Line in File</label>
+	
+				<input type='radio' id='user_create' name='type' value='user_create' onclick='selected(4)'>
+				<label for='user_create'>Create User</label>
+	
+				<input type='radio' id='user_delete' name='type' value='user_delete' onclick='selected(5)'>
+				<label for='user_delete'>Delete User</label><br>
+	
+				<input type='text' id='file' name='file' placeholder='Absolute file path'>
+				<input type='text' id='line' name='line' placeholder='Line content'>
+				<input type='text' id='username' name='username' placeholder='Username'>
+				<input type='number' id='points' name='points' placeholder='Points on Creation'>
+				<input type='text' id='description' name='description' placeholder='Description'>
+				
+				<label for='machine'>Machine</label>
+				<select id='machine' name='machine'>
+					<option value='ubuntu'>Ubuntu</option>
+					<option value='win10'>Windows 10</option>
+					<option value='winser'>Windows Server</option>
+					<option value='debian'>Debian</option>
+				</select>
+	
+				<br><input type='button' value='Add entry' onclick='return createEntry()'>
+			</form>
+
+			<ul id='entries'>
+
+			</ul>
+
+			<button onclick='createExport()'>Export data</button>
+		</div>
+
+		<script>
+			hideById('file');
+			hideById('line');
+			hideById('username');
+
+			let selectedType = 0;
+
+			function hideById(id) {
+				const element = document.getElementById(id);
+
+				element.style.display = 'none';
+				element.style.height = '0';
+			}
+
+			function showById(id) {
+				const element = document.getElementById(id);
+
+				element.style.display = 'block';
+				element.style.height = 'auto';
+			}
+
+			function selected(active) {
+				selectedType = active;
+
+				switch (active) {
+					case 0:
+					case 1:
+						showById('file');
+						hideById('line');
+						hideById('username');
+
+						break;
+					case 2:
+					case 3:
+						showById('file');
+						showById('line');
+						hideById('username');
+
+						break;
+					case 4:
+					case 5:
+						hideById('file');
+						hideById('line');
+						showById('username');
+
+						break;
+				}
+			}
+
+			function getValueById(id) {
+				return document.getElementById(id).value;
+			}
+
+			function getInput() {
+				const points = getValueById('points');
+				const description = getValueById('description');
+				const machine = getValueById('machine');
+
+				switch (selectedType) {
+					case 0:
+					case 1:
+						return `${getValueById('file')},,,,${description},,${points},,${machine}`;
+					case 2:
+					case 3:
+						return `${getValueById('file')},,${getValueById('line')},,${description},,${points},,${machine}`;
+					case 4:
+					case 5:
+						return `/etc/passwd,,${getValueById('username')},,${description},,${points},,${machine}`;
+				}
+			}
+
+			function createEntry() {
+				const entry = document.createElement('li');
+				const inputValue = getInput();
+
+				document.getElementById('form').reset();
+
+				hideById('username');
+				hideById('line');
+				hideById('file');
+
+				entry.appendChild(
+					document.createTextNode(inputValue)
+				);
+
+				document
+					.getElementById('entries')
+					.appendChild(entry);
+
+				return false;
+			}
+
+			function createExport() {
+				const content = [];
+				const elements = document.getElementById('entries').getElementsByTagName('li');
+
+				for (const element of elements) {
+					content.push(element.innerText);
+				}
+
+				const blob = new Blob([content.join('\n')], {
+					type: 'text/plain;charset=utf-8'
+				});
+
+				const url = URL.createObjectURL(blob);
+				const a = document.createElement('a');
+
+				a.href = url;
+				a.download = 'flags.txt';
+
+				const handleClick = () => {
+					setTimeout(() => {
+						URL.revokeObjectURL(url);
+						this.removeEventListener('click', clickHandler);
+					}, 150);
+				};
+
+				a.addEventListener('click', handleClick, false);
+				a.click();
+
+				alert('Pipe flags.txt into CCSGen to generate a bash script and SQL file for easy setup.');
+			}
+		</script>
+	</body>
+</html>
