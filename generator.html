@@ -35,6 +35,12 @@
 	
 				<input type='radio' id='user_delete' name='type' value='user_delete' onclick='selected(5)'>
 				<label for='user_delete'>Delete User</label><br>
+
+				<input type='radio' id='process_create' name='type' value='process_create' onclick='selected(6)'>
+				<label for='process_create'>Start Process</label><br>
+
+				<input type='radio' id='process_delete' name='type' value='process_delete' onclick='selected(7)'>
+				<label for='process_delete'>Stop Process</label><br>
 	
 				<input type='text' id='file' name='file' placeholder='Absolute file path'>
 				<input type='text' id='line' name='line' placeholder='Line content'>
@@ -106,6 +112,11 @@
 						showById('username');
 
 						break;
+					case 6:
+					case 7:
+						showById('file');
+						hideById('line');
+						hideById('username');
 				}
 			}
 
@@ -128,6 +139,9 @@
 					case 4:
 					case 5:
 						return `/etc/passwd,,${getValueById('username')},,${description},,${points},,${machine}`;
+					case 6:
+					case 7:
+						return `${getValueById('file')},,,,${description},,${points},,${machine}`;
 				}
 			}
 
