@@ -166,7 +166,7 @@
 						return `${getValueById('file')},,,,${description},,${points},,${machine}`;
 					case 8:
 					case 9:
-						return `/etc/group,,${getValueById('group')}${getValueById('username')},,${description},,${points},,${machine}`;
+						return `/etc/group,,${getValueById('group')}:${getValueById('username')},,${description},,${points},,${machine}`;
 				}
 			}
 
