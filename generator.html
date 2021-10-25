@@ -41,10 +41,17 @@
 
 				<input type='radio' id='process_delete' name='type' value='process_delete' onclick='selected(7)'>
 				<label for='process_delete'>Stop Process</label><br>
+
+				<input type='radio' id='group_user_create' name='type' value='group_user_create' onclick='selected(8)'>
+				<label for='group_user_create'>Add User to Group</label>
+
+				<input type='radio' id='group_user_delete' name='type' value='group_user_delete' onclick='selected(9)'>
+				<label for='group_user_delete'>Remove User from Group</label><br>
 	
 				<input type='text' id='file' name='file' placeholder='Absolute file path'>
 				<input type='text' id='line' name='line' placeholder='Line content'>
 				<input type='text' id='username' name='username' placeholder='Username'>
+				<input type='text' id='group' name='group' placeholder='Group'>
 				<input type='number' id='points' name='points' placeholder='Points'>
 				<input type='text' id='description' name='description' placeholder='Description'>
 				
@@ -70,6 +77,7 @@
 			hideById('file');
 			hideById('line');
 			hideById('username');
+			hideById('group');
 
 			let selectedType = 0;
 
@@ -96,6 +104,7 @@
 						showById('file');
 						hideById('line');
 						hideById('username');
+						hideById('group');
 
 						break;
 					case 2:
@@ -103,6 +112,7 @@
 						showById('file');
 						showById('line');
 						hideById('username');
+						hideById('group');
 
 						break;
 					case 4:
@@ -110,6 +120,7 @@
 						hideById('file');
 						hideById('line');
 						showById('username');
+						hideById('group');
 
 						break;
 					case 6:
@@ -117,6 +128,17 @@
 						showById('file');
 						hideById('line');
 						hideById('username');
+						hideById('group');
+
+						break;
+					case 8:
+					case 9:
+						hideById('file');
+						hideById('line');
+						showById('username');
+						showById('group');
+
+						break;
 				}
 			}
 
@@ -142,6 +164,9 @@
 					case 6:
 					case 7:
 						return `${getValueById('file')},,,,${description},,${points},,${machine}`;
+					case 8:
+					case 9:
+						return `/etc/group,,${getValueById('group')}${getValueById('username')},,${description},,${points},,${machine}`;
 				}
 			}
 
@@ -154,6 +179,7 @@
 				hideById('username');
 				hideById('line');
 				hideById('file');
+				hideById('group');
 
 				entry.appendChild(
 					document.createTextNode(inputValue)
