@@ -54,7 +54,10 @@
 				<input type='text' id='group' name='group' placeholder='Group'>
 				<input type='number' id='points' name='points' placeholder='Points'>
 				<input type='text' id='description' name='description' placeholder='Description'>
-				
+
+				<label for='penalty'>Penalty</label>
+  			<input type='checkbox' id='penalty' name='checkbox' value='penalty'><br>
+
 				<label for='machine'>Machine</label>
 				<select id='machine' name='machine'>
 					<option value='ubuntu'>Ubuntu</option>
@@ -150,23 +153,24 @@
 				const points = getValueById('points') * (selectedType % 2 === 0 ? 1 : -1);
 				const description = getValueById('description');
 				const machine = getValueById('machine');
+				const penalty = document.getElementById('penalty').checked ? 1 : 0;
 
 				switch (selectedType) {
 					case 0:
 					case 1:
-						return `${getValueById('file')},,,,${description},,${points},,${machine}`;
+						return `${getValueById('file')},,,,${description},,${points},,${machine},,${penalty}`;
 					case 2:
 					case 3:
-						return `${getValueById('file')},,${getValueById('line')},,${description},,${points},,${machine}`;
+						return `${getValueById('file')},,${getValueById('line')},,${description},,${points},,${machine},,${penalty}`;
 					case 4:
 					case 5:
-						return `/etc/passwd,,${getValueById('username')},,${description},,${points},,${machine}`;
+						return `/etc/passwd,,${getValueById('username')},,${description},,${points},,${machine},,${penalty}`;
 					case 6:
 					case 7:
 						return `${getValueById('file')},,,,${description},,${points},,${machine}`;
 					case 8:
 					case 9:
-						return `/etc/group,,${getValueById('group')}:${getValueById('username')},,${description},,${points},,${machine}`;
+						return `/etc/group,,${getValueById('group')}:${getValueById('username')},,${description},,${points},,${machine},,${penalty}`;
 				}
 			}
 
